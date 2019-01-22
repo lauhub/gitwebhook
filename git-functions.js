@@ -1,9 +1,10 @@
+var shell = require('shelljs');
+
 module.exports = {
-	shell: require('shelljs'),
   checkGitInstalled: function () {
-    if (!this.shell.which('git')) {
-			this.shell.echo('Sorry, this script requires "git" to be installed');
-			this.shell.exit(1);
+    if (!shell.which('git')) {
+			shell.echo('Sorry, this script requires "git" to be installed');
+			shell.exit(1);
 			return false;
 		}
 		else {
@@ -13,11 +14,11 @@ module.exports = {
   },
   setReposDir: function (newDir, callback) {
   	this.directory = newDir;
-    return this.shell.cd(this.directory).code;
+    return shell.cd(this.directory).code;
   },
   pullFromOrigin: function (callback) {
   	console.log("Executing pullFromOrigin");
-    this.shell.exec('git pull', callback);
+    shell.exec('git pull', callback);
   	console.log("End of pullFromOrigin");
   }
 };

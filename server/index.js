@@ -1,13 +1,15 @@
-module.exports = function(app, configuration){
+module.exports = function(app, configuration, gitRepos){
+	var shell = require('shelljs');
+	
 	app.get('/', function(req, res) {
-		if(gitRepos.setReposDir(directory) != 0){
-			res.send('Directory '+directory+' does not exist');
+		if(gitRepos.setReposDir(__dirname) != 0){
+			res.send('Directory '+ __dirname +' does not exist');
 		}
 		else {
 			var p = new Promise((resolve, reject) => {
 					gitRepos.pullFromOrigin((code, stdout, stderr) => {
 						if(code != 0){
-							reject();
+							reject(new Error("code : "+ stdout+ "stderr:\n"+stderr));
 						}
 						else{
 							resolve(true);
@@ -23,8 +25,7 @@ module.exports = function(app, configuration){
 						res.send('failed');
 						//  response.redirect('/failure');
 					}
-			});
-			p.catch(() => {res.send('exception');});
+			}).catch(error => {res.send('exception: '+error.message);});
 		}
 	});
 	

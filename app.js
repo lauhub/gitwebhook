@@ -66,7 +66,7 @@ var confFile = getConfigurationFilePath();
 if(confFile !== undefined){
 	console.log('Loading '+ confFile +' configuration');
 	var configuration = JSON.parse(fs.readFileSync(confFile, 'utf8'));
-	require("./server")(app, configuration);
+	require("./server")(app, configuration, gitRepos);
 }
 else {
 	console.log("Missing configuration file" );
