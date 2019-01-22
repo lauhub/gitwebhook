@@ -1,5 +1,6 @@
-module.exports = function(app, configuration, gitRepos){
+module.exports = function(app, configuration){
 	var shell = require('shelljs');
+	var requests = require('./requests');
 	
 	app.get('/', function(req, res) {
 			res.send('failed : unknown request handler');
@@ -9,7 +10,7 @@ module.exports = function(app, configuration, gitRepos){
 		console.log(hook);
 		console.log(`Adding hook ${hook.id}`);
 		app.get('/'+hook.id, function(req, res) {
-				gitRepos.createRequestHandlerPromise(hook.dir, hook.cmd, hook.id)
+				requests.createRequestHandlerPromise(hook.dir, hook.cmd, hook.id)
 				.then(successful => {
 						if (successful) {
 							res.send('done ' + successful);
