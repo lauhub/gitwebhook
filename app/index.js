@@ -11,23 +11,29 @@
  * 
  *
  ******************************************************************************/
-
+var shell = require('shelljs');
+if (!shell.which('git')) {
+	shell.echo('Sorry, this script requires "git" to be installed');
+	shell.exit(1);
+}
+else {
+	console.log("git found !");
+}
+var cwd = shell.pwd().stdout;
+console.log(cwd)
 var express = require('express');
 var fs = require('fs');
 var path = require('path');
 var morgan = require('morgan');
-var shell = require('shelljs');
-
 var app = express();
+
+
 
 // Morgan configuration
 // see http://expressjs.com/en/resources/middleware/morgan.html (single file logger)
-var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
+var accessLogStream = fs.createWriteStream(path.join(cwd, 'access.log'), { flags: 'a' })
 app.use(morgan('short', { stream: accessLogStream }))
 
-var gitRepos = require('./functions');
-
-gitRepos.checkGitIsInstalled();
 
 /**
  * Searches for configuration file named 'gitwebhook.conf'
@@ -38,7 +44,7 @@ gitRepos.checkGitIsInstalled();
  * - in /etc/gitwebhook dir
  * 
  */
-function getConfigurationFilePath(){
+function getConfigurationFilePath(currentDir){
 	var shell = require('shelljs') ;
 	var configurationFilename = 'gitwebhook.conf' ;
 	const homeDir = require('os').homedir() ;
@@ -47,7 +53,7 @@ function getConfigurationFilePath(){
 	
 	var arrayConfigurationFilepath = [
 		path.join(homeDir, '.gitwebhook'),
-		path.join(__dirname, 'conf', configurationFilename),
+		path.join(currentDir, 'conf', configurationFilename),
 		path.join('/etc/gitwebhook', configurationFilename)
 	];
 	var confFilepath = undefined ;
@@ -62,7 +68,7 @@ function getConfigurationFilePath(){
 }
 
 //Check configuration file existence and run server if exists
-var confFile = getConfigurationFilePath();
+var confFile = getConfigurationFilePath(cwd);
 if(confFile !== undefined){
 	console.log('Loading '+ confFile +' configuration');
 	var configuration = JSON.parse(fs.readFileSync(confFile, 'utf8'));
