@@ -25,9 +25,9 @@ var app = express();
 var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
 app.use(morgan('short', { stream: accessLogStream }))
 
-var gitRepos = require('./git-functions');
+var gitRepos = require('./functions');
 
-gitRepos.checkGitInstalled();
+gitRepos.checkGitIsInstalled();
 
 /**
  * Searches for configuration file named 'gitwebhook.conf'
