@@ -29,47 +29,46 @@ var gitRepos = require('./gitFunctions');
 
 gitRepos.checkGitInstalled();
 
-//var directory = path.join(__dirname, 'voting-app') ;
-
-var directory = '/home/lauhub';
-
-function createCallback(resolve, reject, next, callback){
-	return function(code, stdout, stderr){
-		return callback(code, resolve, reject, next);
-	};
+/**
+ * Searches for configuration file named 'gitwebhook.conf'
+ * 
+ * Configuration file may be
+ * - user's home directory's '.gitwebhook' file
+ * - in current directory's conf dir
+ * - in /etc/gitwebhook dir
+ * 
+ */
+function getConfigurationFilePath(){
+	var shell = require('shelljs') ;
+	var configurationFilename = 'gitwebhook.conf' ;
+	const homeDir = require('os').homedir() ;
+	
+	const defaultDir = "/etc/gitwebhook" ;
+	
+	var arrayConfigurationFilepath = [
+		path.join(homeDir, '.gitwebhook'),
+		path.join(__dirname, 'conf', configurationFilename),
+		path.join('/etc/gitwebhook', configurationFilename)
+	];
+	var confFilepath = undefined ;
+	var i = 0;
+	while (confFilepath === undefined && i < arrayConfigurationFilepath.length) {
+		if (shell.test('-e', arrayConfigurationFilepath[i])){
+			confFilepath = arrayConfigurationFilepath[i];
+		}
+		i++ ;
+	}
+	return confFilepath
 }
 
-var obj = JSON.parse(fs.readFileSync('gitwebhook.conf', 'utf8'));
-
-app.get('/', function(req, res) {
-	if(gitRepos.setReposDir(directory) != 0){
-		res.send('Directory '+directory+' does not exist');
-	}
-	else {
-		var p = new Promise((resolve, reject) => {
-				gitRepos.pullFromOrigin((code, stdout, stderr) => {
-					if(code != 0){
-						reject();
-					}
-					else{
-						resolve(true);
-					}
-				});
-		});
-		p.then(successful => {
-        if (successful) {
-          res.send('done');
-          //  response.redirect('/connected');
-        }
-        else {
-					res.send('failed');
-          //  response.redirect('/failure');
-        }
-    });
-    p.catch(() => {res.send('exception');});
-	}
-});
-
-app.listen(3000, function() {
-  console.log('listening on port 3000');
-});
+//Check configuration file existence and run server if exists
+var confFile = getConfigurationFilePath();
+if(confFile !== undefined){
+	console.log('Loading '+ confFile +' configuration');
+	var configuration = JSON.parse(fs.readFileSync(confFile, 'utf8'));
+	require("./server")(app, configuration);
+}
+else {
+	console.log("Missing configuration file" );
+	process.exit(1);
+}

@@ -2,7 +2,7 @@ module.exports = {
 	shell: require('shelljs'),
   checkGitInstalled: function () {
     if (!this.shell.which('git')) {
-			this.shell.echo('Sorry, this script requires git');
+			this.shell.echo('Sorry, this script requires "git" to be installed');
 			this.shell.exit(1);
 			return false;
 		}
