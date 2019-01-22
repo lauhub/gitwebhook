@@ -22,7 +22,11 @@ module.exports = function(app, configuration){
 		});
 	});
 	
-	app.listen(3000, function() {
-		console.log('listening on port 3000');
+	var port = 3000;
+	if(configuration.port){
+		port = configuration.port
+	}
+	app.listen(port, function() {
+		console.log(`listening on port ${port}`);
 	});
 } ;
