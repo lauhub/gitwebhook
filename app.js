@@ -25,7 +25,7 @@ var app = express();
 var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
 app.use(morgan('short', { stream: accessLogStream }))
 
-var gitRepos = require('./gitFunctions');
+var gitRepos = require('./git-functions');
 
 gitRepos.checkGitInstalled();
 
