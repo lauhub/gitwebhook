@@ -1,0 +1,10 @@
+{
+    "hooks": [
+        {
+            "id": "test-the-pull",
+            "dir": "/full/path/to/local/repos",
+            "cmd": "/full/path/to/script"
+        }
+    ],
+    "port": 3011
+}

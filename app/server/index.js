@@ -9,7 +9,10 @@ module.exports = function(app, configuration){
 	configuration.hooks.forEach(function(hook){
 		console.log(hook);
 		console.log(`Adding hook ${hook.id}`);
-		app.get('/'+hook.id, function(req, res) {
+		app.post('/'+hook.id, function(req, res) {
+				console.log(JSON.stringify(req.body));
+				console.log(req.body.zen);
+				
 				requests.createRequestHandlerPromise(hook.dir, hook.cmd, hook.id)
 				.then(successful => {
 						if (successful) {

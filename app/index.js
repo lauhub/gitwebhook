@@ -39,6 +39,10 @@ var confFile = functions.getConfigurationFilePath(cwd);
 if(confFile !== undefined){
 	console.log('Loading '+ confFile +' configuration');
 	var configuration = JSON.parse(fs.readFileSync(confFile, 'utf8'));
+	
+	//Let us configure express (https://stackoverflow.com/questions/5710358/how-to-retrieve-post-query-parameters):
+	app.use(express.json());
+	
 	require("./server")(app, configuration);
 }
 else {
