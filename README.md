@@ -6,6 +6,40 @@
 npm install
 ```
 
+## Configuration
+
+Copy the `conf/gitwebhook.conf.sample` to one of the following locations:
+
+ - `$HOME/.gitwebhook`
+ - `conf/gitwebhook.conf` (in directory from where app is launched)
+ - `/etc/gitwebhook/gitwebhook.conf`
+
+Modify it according to your needs`. The following file:
+
+```
+{
+    "hooks": [
+        {
+            "id": "test-the-pull",
+            "dir": "/full/path/to/local/repos",
+            "cmd": "/full/path/to/script"
+        }
+    ],
+    "port": 3011
+}
+```
+
+will allow the following POST request :
+
+```
+http://127.0.0.1:3011/test-the-pull
+```
+
+to execute `/full/path/to/script` executable file into `/full/path/to/local/repos` directory.
+
+**Important** 
+
+Make sure your script has executable permission.
 
 ## NGINX sample configuration file
 
